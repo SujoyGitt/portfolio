@@ -24,11 +24,9 @@
             imJs.smothScroll_Two();
             imJs.stickyAdjust();
             imJs.testimonialActivation();
-            imJs.contactForm();
             imJs.wowActive();
             imJs.awsActivation();
             imJs.demoActive();
-            imJs.activePopupDemo();
             imJs.onePageNav();
         },
 
@@ -42,40 +40,7 @@
             })
         },
 
-        contactForm: function() {
-            $('.rwt-dynamic-form').on('submit', function(e) {
-                e.preventDefault();
-                var _self = $(this);
-                var __selector = _self.closest('input,textarea');
-                _self.closest('div').find('input,textarea').removeAttr('style');
-                _self.find('.error-msg').remove();
-                _self.closest('div').find('button[type="submit"]').attr('disabled', 'disabled');
-                var data = $(this).serialize();
-                $.ajax({
-                    url: 'mail.php',
-                    type: "post",
-                    dataType: 'json',
-                    data: data,
-                    success: function(data) {
-                        _self.closest('div').find('button[type="submit"]').removeAttr('disabled');
-                        if (data.code == false) {
-                            _self.closest('div').find('[name="' + data.field + '"]');
-                            _self.find('.rn-btn').after('<div class="error-msg"><p>*' + data.err + '</p></div>');
-                        } else {
-                            $('.error-msg').hide();
-                            $('.form-group').removeClass('focused');
-                            _self.find('.rn-btn').after('<div class="success-msg"><p>' + data.success + '</p></div>');
-                            _self.closest('div').find('input,textarea').val('');
-
-                            setTimeout(function() {
-                                $('.success-msg').fadeOut('slow');
-                            }, 5000);
-                        }
-                    }
-                });
-            });
-        },
-
+       
 
 
         wowActive: function() {
@@ -424,3 +389,149 @@
 
 
 })(jQuery, window)
+
+
+
+
+//  send mail logic start here -->
+
+$(document).ready(function () {
+    // Initialize validation on form submit
+    $("#contact-form").on('submit', function (event) {
+        event.preventDefault();
+        
+        // Clear previous error messages
+        $(".form-control").removeClass('is-invalid');
+        $(".invalid-feedback").text('');
+        $("#form-feedback").hide();
+
+        // Get form values
+        let fullname = $("#contact-name").val().trim();
+        let phone = $("#contact-phone").val().trim();
+        let email = $("#contact-email").val().trim();
+        let subject = $("#subject").val().trim();
+        let message = $("#contact-message").val().trim();
+
+        let isValid = true;
+
+        // Validate name field
+        if (!fullname) {
+            $("#contact-name").addClass('is-invalid');
+            $("#name-error").text("Please enter your name.");
+            isValid = false;
+        }
+
+        // Validate phone number field (allow only digits)
+        if (!phone) {
+            $("#contact-phone").addClass('is-invalid');
+            $("#phone-error").text("Please enter your phone number.");
+            isValid = false;
+        } else if (!/^\d+$/.test(phone)) {
+            $("#contact-phone").addClass('is-invalid');
+            $("#phone-error").text("Phone number must only contain digits.");
+            isValid = false;
+        }
+
+        // Validate email field
+        if (!email) {
+            $("#contact-email").addClass('is-invalid');
+            $("#email-error").text("Please enter a valid email address.");
+            isValid = false;
+        } else if (!/\S+@\S+\.\S+/.test(email)) {
+            $("#contact-email").addClass('is-invalid');
+            $("#email-error").text("Please enter a valid email address.");
+            isValid = false;
+        }
+
+        // Validate subject field
+        if (!subject) {
+            $("#subject").addClass('is-invalid');
+            $("#subject-error").text("Please enter a subject.");
+            isValid = false;
+        }
+
+        // Validate message field
+        if (!message) {
+            $("#contact-message").addClass('is-invalid');
+            $("#message-error").text("Please enter your message.");
+            isValid = false;
+        }
+
+        // If form is valid, submit the form
+        if (isValid) {
+            sendEmail(fullname, phone, email, subject, message);
+        } else {
+            $("#form-feedback").text("Please fix the errors above.").addClass('error').show();
+        }
+    });
+});
+
+// Function to send email
+function sendEmail(fullname, phone, email, subject, message) {
+    let body = `
+        New Message From Your Portfolio <br/><br/>
+        User Name: ${fullname} <br/>
+        Email: ${email} <br/>
+        Phone No: ${phone} <br/>
+        Subject: ${subject} <br/>
+        Comment: ${message} <br/><br/>
+    `;
+
+    // Send email to admin
+    Email.send({
+        SecureToken: "fc86980c-7a39-4e22-846b-13f42d3a105f",
+        To: 'sujoy143656@gmail.com',
+        From: "info@steppercode.com",
+        Subject: "New Message - From Your Portfolio",
+        Body: body
+    }).then(() => {
+        // Send confirmation email to the user
+        Email.send({
+            SecureToken: "fc86980c-7a39-4e22-846b-13f42d3a105f",
+            To: email,  // Customer's email
+            From: "info@steppercode.com",
+            Subject: "Thank you for contacting us!",
+            Body: `
+                <html>
+                    <body>
+                        <p>Dear ${fullname},</p>
+                        <p>Thank you for reaching out to us! We have received your message and will get back to you soon.</p>
+                        <p>Your Booking Details:</p>
+                        <table>
+                            <tr><td><strong>Full Name:</strong></td><td>${fullname}</td></tr>
+                            <tr><td><strong>Email:</strong></td><td>${email}</td></tr>
+                            <tr><td><strong>Phone:</strong></td><td>${phone}</td></tr>
+                            <tr><td><strong>Subject:</strong></td><td>${subject}</td></tr>
+                            <tr><td><strong>Message:</strong></td><td>${message}</td></tr>
+                        </table>
+                        <p>We will contact you soon.</p>
+                        <p>Regards,<br/>London Wheels Limo</p>
+                    </body>
+                </html>
+            `
+        }).then(() => {
+            // Show success message and reset form
+            $("#contact-form")[0].reset();
+            $("#form-feedback").text('Your message has been sent successfully!').addClass('success').show();
+            alert('Your message has been sent successfully!');
+        }).catch(error => {
+            console.error("Failed to send confirmation email to customer:", error);
+            $("#form-feedback").text("Error sending confirmation email. Please try again.").addClass('error').show();
+        });
+    }).catch(error => {
+        console.error("Failed to send email to admin:", error);
+        $("#form-feedback").text("Error sending message. Please try again.").addClass('error').show();
+    });
+}
+
+// Phone number validation (only allow digits)
+function validatePhone(evt) {
+    var theEvent = evt || window.event;
+    var key = theEvent.keyCode || theEvent.which;
+    key = String.fromCharCode(key);
+    var regex = /[0-9]|\./;
+    if (!regex.test(key)) {
+        theEvent.returnValue = false;
+        if (theEvent.preventDefault) theEvent.preventDefault();
+    }
+}

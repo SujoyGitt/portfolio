@@ -20728,3 +20728,53 @@ body.white-version .rn-btn-ulderline {
 }
 
 /*# sourceMappingURL=../maps/style.css.map */
+
+
+
+/* validation logic start here */
+/* Customize form appearance */
+.rnt-contact-form .form-group {
+    margin-bottom: 15px;
+}
+
+.form-control-lg {
+    font-size: 16px;
+}
+
+textarea.form-control {
+    font-size: 14px;
+    resize: vertical;
+}
+
+.rn-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 30px;
+    font-size: 16px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.rn-btn:hover {
+    background-color: #0056b3;
+}
+
+.invalid-feedback {
+    font-size: 12px;
+    color: red;
+}
+
+/* Form Success Message */
+#form-feedback.success {
+    color: green;
+    font-size: 16px;
+}
+
+#form-feedback.error {
+    color: red;
+    font-size: 16px;
+}
