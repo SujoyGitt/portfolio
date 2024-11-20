@@ -481,7 +481,7 @@ function sendEmail(fullname, phone, email, subject, message) {
     Email.send({
         SecureToken: "fc86980c-7a39-4e22-846b-13f42d3a105f",
         To: 'sujoy143656@gmail.com',
-        From: "info@steppercode.com",
+        From: "sujoy143656@gmail.com",
         Subject: "New Message - From Your Portfolio",
         Body: body
     }).then(() => {
@@ -489,7 +489,7 @@ function sendEmail(fullname, phone, email, subject, message) {
         Email.send({
             SecureToken: "fc86980c-7a39-4e22-846b-13f42d3a105f",
             To: email,  // Customer's email
-            From: "info@steppercode.com",
+            From: "sujoy143656@gmail.com",
             Subject: "Thank you for contacting us!",
             Body: `
                 <html>
