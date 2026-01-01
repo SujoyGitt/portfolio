@@ -380,7 +380,7 @@
                 filter: ':not(.external)',
                 easing: 'swing',
                 scrollChange: function($currentListItem) {
-                    console.log(this);
+                    // console.log(this);
                 }
             });
         },
@@ -536,3 +536,34 @@ function validatePhone(evt) {
         if (theEvent.preventDefault) theEvent.preventDefault();
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  const themeToggle = document.getElementById('themeToggle');
+  const body = document.body;
+  
+  // Check for saved theme preference or default to 'dark'
+  const currentTheme = localStorage.getItem('theme') || 'dark';
+  
+  // Apply the theme on page load
+  if (currentTheme === 'white') {
+    body.classList.add('white-version');
+    body.classList.remove('dark-theme');
+  } else {
+    body.classList.remove('white-version');
+    body.classList.add('dark-theme');
+  }
+  
+  // Toggle theme on button click
+  themeToggle.addEventListener('click', function() {
+    // Toggle between themes
+    if (body.classList.contains('white-version')) {
+      body.classList.remove('white-version');
+      body.classList.add('dark-theme');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      body.classList.add('white-version');
+      body.classList.remove('dark-theme');
+      localStorage.setItem('theme', 'white');
+    }
+  });
+});
