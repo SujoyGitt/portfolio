@@ -542,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const body = document.body;
   
   // Check for saved theme preference or default to 'dark'
-  const currentTheme = localStorage.getItem('theme') || 'dark';
+  const currentTheme = localStorage.getItem('theme') || 'light';
   
   // Apply the theme on page load
   if (currentTheme === 'white') {
